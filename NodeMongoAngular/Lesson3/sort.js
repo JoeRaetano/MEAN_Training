@@ -25,9 +25,9 @@ function displayCursor(cursor, msg){
 
 function sortWordsAscending(collection){
   var query = {'first': 'w'};
-  var sorter = [['word', 1]];
-  var cursor = collection.find(query, {limit: 10});
-  cursor = cursor.sort(sorter);
+  var sorter = [['word', 1]]; // create an array object then within that array create a subarray to define the fields you want to sort on
+  var cursor = collection.find(query, {limit: 10}); // 10 objects back at a time
+  cursor = cursor.sort(sorter); // actually sorts the words
   displayCursor(cursor, "W words ordered ascending:");
 }
 
@@ -41,7 +41,7 @@ function sortWordsDescending(collection){
 
 function sortWordsAscBySize(collection){
   var query = {'first': 'q'};
-  var sorter = [['last', 1], ['size', -1]];
+  var sorter = [['last', 1], ['size', -1]]; // sorts on last letter ascending and size descending
   var cursor = collection.find(query, {limit: 10});
   cursor = cursor.sort(sorter);
   displayCursor(cursor, "Q words ordered first by last "+
