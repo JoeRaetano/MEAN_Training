@@ -1,0 +1,94 @@
+//Commands:
+db.createUser()
+db.dropUser()
+db.dropAllUsers()
+db.grantRolesToUser(username, roles, writeConcern)
+db.revokeRolesFromUser( "<username>", [ <roles> ], { <writeConcern> } )
+db.getUser("testWriter")
+db.getUsers()
+
+Name	Description
+db.createRole()	                Creates a role and specifies its privileges.
+db.updateRole()	                Updates a user-defined role.
+db.dropRole()	                Deletes a user-defined role.
+db.dropAllRoles()	            Deletes all user-defined roles associated with a database.
+db.grantPrivilegesToRole()	    Assigns privileges to a user-defined role.
+db.revokePrivilegesFromRole()	Removes the specified privileges from a user-defined role.
+db.grantRolesToRole()	        Specifies roles from which a user-defined role inherits privileges.
+db.revokeRolesFromRole()	    Removes inherited roles from a role.
+db.getRole()	                Returns information for the specified role.
+db.getRoles()	                Returns information for all the user-defined roles in a database.
+
+show dbs
+show users
+
+
+//create admin accounts version 3 mongo
+use admin
+db.createUser( { "user" : "dbadmin",
+                 "pwd": "test",
+                 "customData" : { employeeId: 12345 },
+                 "roles" : [ { role: "clusterAdmin", db: "admin" },
+                             { role: "readAnyDatabase", db: "admin" },
+                             { role: "dbAdminAnyDatabase", db: "admin"},
+                             "readWrite"
+                             ] },
+               { w: "majority" , wtimeout: 5000 } )
+
+db.createUser(
+   {
+     user: "useradmin",
+     pwd: "test",
+     roles: [ "userAdminAnyDatabase" ]
+   }
+)
+
+//create user accounts version 3 mongodb
+use test
+db.createUser( { user: "testWriter",
+              pwd: "test",
+              roles: [ "readWrite" ] } );
+
+db.createUser( { user: "testReader",
+              pwd: "test",
+              roles: [ "read" ] } );
+
+
+//create admin accounts version 2 of mongo
+db.addUser( { user: "dbadmin",
+              pwd: "test",
+              roles: [ "readWriteAnyDatabase", 
+                       "dbAdminAnyDatabase", 
+                       "clusterAdmin" ] } );
+db.addUser( { user: "useradmin",
+              pwd: "test",
+              roles: [ "userAdminAnyDatabase" ] } )
+
+
+//create user accounts version 2 mongodb
+use test
+db.addUser( { user: "testWriter",
+              pwd: "test",
+              roles: [ "readWrite" ] } );
+
+db.addUser( { user: "testReader",
+              pwd: "test",
+              roles: [ "read" ] } );
+
+//shutdown and restart mongodb with authentication
+use admin
+db.shutdownServer()
+mongod -dbpath c:\mongodb\data\db --auth
+mongod --auth //if your database is already located at /data/db
+
+
+//use authentication to view users
+mongo
+show users
+db.auth("useradmin", "test");
+show users
+
+//restart mongod without authentication
+use admin
+db.shutdownServer()
+mongod -dbpath c:\mongodb\data\db
